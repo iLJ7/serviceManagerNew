@@ -1,0 +1,4 @@
+Make select in exact same spot.
+Style individual pages.
+"More.." page to change settings.
+
