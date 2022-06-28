@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import tkinter as tk
 from truckDB import truckDB
 from tkinter import ttk
@@ -18,6 +19,9 @@ class MainFrame(tk.Tk):
         self.configure(background='white')
         global allPages
         allPages = {}
+
+        global truckdb
+        truckdb = truckDB('trucks.db')
   
         #  Creating the home page.
         page_name = homePage.__name__
@@ -34,9 +38,9 @@ class MainFrame(tk.Tk):
         allPages[page_name] = frame
 
         # Creating the individual truck pages.
-        trucks = ["151-kk-142"]
+        trucks = truckdb.fetch()
         for i, truck in enumerate(trucks):
-            page_name = trucks[i]
+            page_name = trucks[i][0][:-4]
             frame = individualTruck(parent = container, controller = self, truck = truck)
             frame.configure(bg='white')
             frame.grid(row=0, column=0, sticky='nsew')
@@ -149,33 +153,36 @@ class individualTruck(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+        s = 'truckPhotos/' + truck[0][:-4] + '-photo' + '.png'
+        print(s)
+        bg = PhotoImage(file = s)#truckPhoto[])
+        label1 = Label(self, bg='white', image=bg)
+        label1.image = bg
+        label1.grid(row=1, column = 1)
+
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
         homeButton.grid(row=0, column=0, pady=(6, 0))
 
-        truck = truck + '.png'
-        click_btn1 = PhotoImage(file=truck)
+        click_btn1 = PhotoImage(file=truck[0])
         button1 = Label(self, bg='white', image=click_btn1, height=250, width=1410, borderwidth = 0)
         button1.image = click_btn1 # keep a reference!
         button1.grid(row=0, column=1)
      
+        infoIcon = PhotoImage(file='info.png')
+        info = Button(self, bg='white', image=infoIcon, height=180, width=180, borderwidth = 0, command=lambda: print('Trying to open info page.'))
+        info.image = infoIcon
+        info.grid(row=2, column = 2)
+
+        settingsIcon = PhotoImage(file='icon.png')
+        settings = Button(self, bg='white', image=settingsIcon, height=180, width=180, borderwidth = 0, command=lambda: print('Trying to open settings page.'))
+        settings.image = settingsIcon
+        settings.grid(row=2, column=3)
         # Display some info from the database.
-        truckdb = truckDB('trucks.db')
         trucks = truckdb.fetch()
-        make, model, color, driver = str(trucks[0][1]), str(trucks[0][2]), str(trucks[0][3]), str(trucks[0][4])
+        make, model, color, driver = str(truck[1]), str(truck[2]), str(truck[3]), str(truck[4])
 
-        make = Label(self, text='Make: ' + make)
-        model = Label(self, text='Model: ' + model, anchor='w')
-        color = Label(self, text='Color: ' + color)
-        driver = Label(self, text='Driver: ' + driver)
-
-        make.grid(row=1, column=1)
-        model.grid(row=2, column=1)
-        color.grid(row=3, column=1)
-        driver.grid(row=4, column=1)
-
-        print(trucks)
 
 def main():
     x = MainFrame()
