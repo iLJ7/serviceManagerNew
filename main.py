@@ -170,15 +170,20 @@ class individualTruck(tk.Frame):
         button1.image = click_btn1 # keep a reference!
         button1.grid(row=0, column=1)
      
+        viewInspIcon = PhotoImage(file='view-inspection.png')
+        viewInsp = Button(self, bg='white', image=viewInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        viewInsp.image = viewInspIcon
+        viewInsp.place(x=1030, y=790)
+
         infoIcon = PhotoImage(file='info.png')
         info = Button(self, bg='white', image=infoIcon, height=180, width=180, borderwidth = 0, command=lambda: print('Trying to open info page.'))
         info.image = infoIcon
-        info.grid(row=2, column = 2)
+        info.place(x=1450, y=790)
 
         settingsIcon = PhotoImage(file='icon.png')
         settings = Button(self, bg='white', image=settingsIcon, height=180, width=180, borderwidth = 0, command=lambda: print('Trying to open settings page.'))
         settings.image = settingsIcon
-        settings.grid(row=2, column=3)
+        settings.place(x=1650, y=790)
         # Display some info from the database.
         trucks = truckdb.fetch()
         make, model, color, driver = str(truck[1]), str(truck[2]), str(truck[3]), str(truck[4])
