@@ -171,7 +171,7 @@ class individualTruck(tk.Frame):
         button1.grid(row=0, column=1)
      
         viewInspIcon = PhotoImage(file='view-inspection.png')
-        viewInsp = Button(self, bg='white', image=viewInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        viewInsp = Button(self, bg='white', image=viewInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("This has been updated"))
         viewInsp.image = viewInspIcon
         viewInsp.place(x=1030, y=790)
 
