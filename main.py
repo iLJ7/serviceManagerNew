@@ -118,7 +118,7 @@ class truckPage(tk.Frame):
         homeButton = Button(my_canvas, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
         homeButton.grid(row=0, column=0)
-        homeButton.pack(side=TOP, anchor=NW, pady=(6, 0))
+        homeButton.pack(side=TOP, anchor=NW, pady=(25, 0))
 
         select = PhotoImage(file='select.png')
         selectButton = Label(scrollable_frame, image=select, height=280, width=1900, bg='white')
@@ -163,16 +163,26 @@ class individualTruck(tk.Frame):
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
-        homeButton.grid(row=0, column=0, pady=(6, 0))
+        homeButton.grid(row=0, column=0, pady=(0, 37))
 
         click_btn1 = PhotoImage(file=truck[0])
-        button1 = Label(self, bg='white', image=click_btn1, height=250, width=1410, borderwidth = 0)
+        button1 = Label(self, bg='white', image=click_btn1, height=250, width=1510, borderwidth = 0)
         button1.image = click_btn1 # keep a reference!
         button1.grid(row=0, column=1)
      
-        viewInspIcon = PhotoImage(file='view-inspection.png')
-        viewInsp = Button(self, bg='white', image=viewInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
-        viewInsp.image = viewInspIcon
+        AddServIcon = PhotoImage(file='add-service.png')
+        addServ = Button(self, bg='white', image=AddServIcon, height=180, width=300, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        addServ.image = AddServIcon
+        addServ.place(x=337  , y=790)
+
+        AddInspIcon = PhotoImage(file='add-inspection.png')
+        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        addInsp.image = AddInspIcon
+        addInsp.place(x=640, y=790)
+
+        ViewInspIcon = PhotoImage(file='view-inspection.png')
+        viewInsp = Button(self, bg='white', image=ViewInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        viewInsp.image = ViewInspIcon
         viewInsp.place(x=1030, y=790)
 
         infoIcon = PhotoImage(file='info.png')
