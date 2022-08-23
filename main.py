@@ -37,6 +37,15 @@ class MainFrame(tk.Tk):
         frame.grid(row=0, column=0, sticky='nsew')
         allPages[page_name] = frame
 
+        # Creating the info pages
+        trucks = truckdb.fetch()
+        for i, truck in enumerate(trucks):
+            page_name = trucks[i][0][:-4] + 'info'
+            frame = infoPage(parent = container, controller = self, truck = truck)
+            frame.configure(bg='white')
+            frame.grid(row=0, column=0, sticky='nsew')
+            allPages[page_name] = frame
+
         # Creating the individual truck pages.
         trucks = truckdb.fetch()
         for i, truck in enumerate(trucks):
@@ -171,12 +180,12 @@ class individualTruck(tk.Frame):
         button1.grid(row=0, column=1)
      
         AddServIcon = PhotoImage(file='add-service.png')
-        addServ = Button(self, bg='white', image=AddServIcon, height=180, width=300, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        addServ = Button(self, bg='white', image=AddServIcon, height=180, width=300, borderwidth= 0, command=lambda: print("Trying to add service."))
         addServ.image = AddServIcon
         addServ.place(x=337  , y=790)
 
         AddInspIcon = PhotoImage(file='add-inspection.png')
-        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
+        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to add inspection."))
         addInsp.image = AddInspIcon
         addInsp.place(x=640, y=790)
 
@@ -186,18 +195,52 @@ class individualTruck(tk.Frame):
         viewInsp.place(x=1030, y=790)
 
         infoIcon = PhotoImage(file='info.png')
-        info = Button(self, bg='white', image=infoIcon, height=180, width=180, borderwidth = 0, command=lambda: print('Trying to open info page.'))
+        info = Button(self, bg='white', image=infoIcon, height=180, width=180, borderwidth = 0, command=lambda: [print('Opening the info page for ' + truck[0][:-4] + 'info'), up_frame(truck[0][:-4] + 'info')])
         info.image = infoIcon
         info.place(x=1450, y=790)
 
-        settingsIcon = PhotoImage(file='icon.png')
-        settings = Button(self, bg='white', image=settingsIcon, height=180, width=180, borderwidth = 0, command=lambda: print('Trying to open settings page.'))
-        settings.image = settingsIcon
-        settings.place(x=1650, y=790)
         # Display some info from the database.
         trucks = truckdb.fetch()
         make, model, color, driver = str(truck[1]), str(truck[2]), str(truck[3]), str(truck[4])
 
+class infoPage(tk.Frame):
+    def __init__(self, parent, controller, truck):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        home = PhotoImage(file='home.png')
+        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
+        homeButton.image = home
+        homeButton.grid(row=0, column=0, pady=(0, 37))
+
+        click_btn1 = PhotoImage(file=truck[0])
+        button1 = Label(self, bg='white', image=click_btn1, height=250, width=1510, borderwidth = 0)
+        button1.image = click_btn1 # keep a reference!
+        button1.grid(row=0, column=1)
+
+        s = 'truckPhotos/' + truck[0][:-4] + '-photo' + '.png'
+        print(s)
+        bg = PhotoImage(file = s)#truckPhoto[])
+        label1 = Label(self, bg='white', image=bg)
+        label1.image = bg
+        label1.place(x=1200, y=290)
+        
+        global my_list
+        my_list = tk.Listbox(self, height=7, width=25, font=('Arial', 30))
+        my_list.place(x=400, y=360)
+
+        def initialListboxPopulate():
+            my_list.delete(0, END)
+            trucks = truckdb.fetch()
+            for tr in trucks:
+                if tr == truck:
+                    make = 'Make: ' + tr[1]
+                    my_list.insert(END, make)
+            # Display some info from the database.
+        
+        initialListboxPopulate()
+        trucks = truckdb.fetch()
+        make, model, color, driver = str(truck[1]), str(truck[2]), str(truck[3]), str(truck[4])
 
 def main():
     x = MainFrame()
