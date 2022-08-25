@@ -262,6 +262,9 @@ class addInspectionPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         
+        global statuses
+        statuses = {}
+
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
@@ -279,6 +282,8 @@ class addInspectionPage(tk.Frame):
             frame.configure(bg='white')
             frame.grid(row=0, column=0, sticky='nsew')
             allPages[page_name] = frame
+
+            statuses[1] = False
             up_frame(page_name)
             
 class refreshInspectionPage(tk.Frame):
@@ -287,7 +292,7 @@ class refreshInspectionPage(tk.Frame):
         self.controller = controller
         
         home = PhotoImage(file='home.png')
-        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
+        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: [changeStatus(), up_frame('homePage')])
         homeButton.image = home
         homeButton.place(x=0, y=0)
 
@@ -296,6 +301,9 @@ class refreshInspectionPage(tk.Frame):
         line1Button.image = line1
         line1Button.pack()
 
+        def changeStatus():
+            statuses[1] = True
+        
 def main():
     x = MainFrame()
     x.state("zoomed")
