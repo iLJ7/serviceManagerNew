@@ -13,6 +13,7 @@ class MainFrame(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
+        global container
         container = tk.Frame(self)
         container.pack()
         
@@ -33,6 +34,13 @@ class MainFrame(tk.Tk):
         # Creating the truck page
         page_name = truckPage.__name__
         frame = truckPage(parent = container, controller = self)
+        frame.configure(bg='white')
+        frame.grid(row=0, column=0, sticky='nsew')
+        allPages[page_name] = frame
+
+        # Creating the inspection pages.
+        page_name = addInspectionPage.__name__
+        frame = addInspectionPage(parent = container, controller = self)
         frame.configure(bg='white')
         frame.grid(row=0, column=0, sticky='nsew')
         allPages[page_name] = frame
@@ -126,8 +134,7 @@ class truckPage(tk.Frame):
         home = PhotoImage(file='home.png')
         homeButton = Button(my_canvas, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
-        homeButton.grid(row=0, column=0)
-        homeButton.pack(side=TOP, anchor=NW, pady=(25, 0))
+        homeButton.place(x=0, y=0)
 
         select = PhotoImage(file='select.png')
         selectButton = Label(scrollable_frame, image=select, height=280, width=1900, bg='white')
@@ -162,42 +169,45 @@ class individualTruck(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+        # Truck image
         s = 'truckPhotos/' + truck[0][:-4] + '-photo' + '.png'
         print(s)
         bg = PhotoImage(file = s)#truckPhoto[])
         label1 = Label(self, bg='white', image=bg)
         label1.image = bg
-        label1.grid(row=1, column = 1)
+        label1.place(x=550, y=250)
 
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
-        homeButton.grid(row=0, column=0, pady=(0, 37))
+        homeButton.place(x=0, y=0)
+        #homeButton.grid(row=0, column=0, pady=(0, 37))
 
+        goback = PhotoImage(file='goback.png')
+        gobackButton = Button(self, image=goback, borderwidth=0, bg='white', command=lambda: up_frame('truckPage'))
+        gobackButton.image = goback
+        gobackButton.place(x=0, y=200)
+
+        # Truck text
         click_btn1 = PhotoImage(file=truck[0])
         button1 = Label(self, bg='white', image=click_btn1, height=250, width=1510, borderwidth = 0)
         button1.image = click_btn1 # keep a reference!
-        button1.grid(row=0, column=1)
-     
-        AddServIcon = PhotoImage(file='add-service.png')
-        addServ = Button(self, bg='white', image=AddServIcon, height=180, width=300, borderwidth= 0, command=lambda: print("Trying to add service."))
-        addServ.image = AddServIcon
-        addServ.place(x=337  , y=790)
+        button1.place(x=200, y=10)
 
         AddInspIcon = PhotoImage(file='add-inspection.png')
-        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to add inspection."))
+        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: [print("Opening add inspection page."), up_frame('addInspectionPage')])
         addInsp.image = AddInspIcon
-        addInsp.place(x=640, y=790)
+        addInsp.place(x=480, y=790)
 
         ViewInspIcon = PhotoImage(file='view-inspection.png')
         viewInsp = Button(self, bg='white', image=ViewInspIcon, height=180, width=400, borderwidth= 0, command=lambda: print("Trying to view inspection."))
         viewInsp.image = ViewInspIcon
-        viewInsp.place(x=1030, y=790)
+        viewInsp.place(x=860, y=790)
 
         infoIcon = PhotoImage(file='info.png')
         info = Button(self, bg='white', image=infoIcon, height=180, width=180, borderwidth = 0, command=lambda: [print('Opening the info page for ' + truck[0][:-4] + 'info'), up_frame(truck[0][:-4] + 'info')])
         info.image = infoIcon
-        info.place(x=1450, y=790)
+        info.place(x=1270, y=790)
 
         # Display some info from the database.
         trucks = truckdb.fetch()
@@ -211,19 +221,24 @@ class infoPage(tk.Frame):
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
-        homeButton.grid(row=0, column=0, pady=(0, 37))
-
+        homeButton.place(x=0, y=0)
+        
+        goback = PhotoImage(file='goback.png')
+        gobackButton = Button(self, image=goback, borderwidth=0, bg='white', command=lambda: up_frame(truck[0][:-4]))
+        gobackButton.image = goback
+        gobackButton.place(x=0, y=200)
+    
         click_btn1 = PhotoImage(file=truck[0])
         button1 = Label(self, bg='white', image=click_btn1, height=250, width=1510, borderwidth = 0)
         button1.image = click_btn1 # keep a reference!
-        button1.grid(row=0, column=1)
+        button1.place(x=200, y=10)
 
         s = 'truckPhotos/' + truck[0][:-4] + '-photo' + '.png'
         print(s)
         bg = PhotoImage(file = s)#truckPhoto[])
         label1 = Label(self, bg='white', image=bg)
         label1.image = bg
-        label1.place(x=1200, y=290)
+        label1.place(x=1100, y=290)
         
         global my_list
         my_list = tk.Listbox(self, height=7, width=25, font=('Arial', 30))
@@ -241,6 +256,45 @@ class infoPage(tk.Frame):
         initialListboxPopulate()
         trucks = truckdb.fetch()
         make, model, color, driver = str(truck[1]), str(truck[2]), str(truck[3]), str(truck[4])
+
+class addInspectionPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        
+        home = PhotoImage(file='home.png')
+        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
+        homeButton.image = home
+        homeButton.place(x=0, y=0)
+
+        line1 = PhotoImage(file="line1.png")
+        line1Button = Button(self, image=line1, borderwidth=0, bg='white', command=lambda: changeStatus())
+        line1Button.image = line1
+        line1Button.pack()
+
+        def changeStatus():
+            print('Changing from green to red.')
+            page_name = refreshInspectionPage.__name__
+            frame = refreshInspectionPage(parent = container, controller = self)
+            frame.configure(bg='white')
+            frame.grid(row=0, column=0, sticky='nsew')
+            allPages[page_name] = frame
+            up_frame(page_name)
+            
+class refreshInspectionPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        
+        home = PhotoImage(file='home.png')
+        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
+        homeButton.image = home
+        homeButton.place(x=0, y=0)
+
+        line1 = PhotoImage(file="line1-red.png")
+        line1Button = Button(self, image=line1, borderwidth=0, bg='white', command=lambda: up_frame('addInspectionPage'))
+        line1Button.image = line1
+        line1Button.pack()
 
 def main():
     x = MainFrame()
