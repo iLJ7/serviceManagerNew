@@ -271,6 +271,12 @@ class addInspectionPage(tk.Frame):
     def __init__(self, parent, controller, truck):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+<<<<<<< HEAD
+=======
+        
+        global statuses
+        statuses = {}
+>>>>>>> 276ff7200bdd33aa073ec58ce252497cd1522ab6
 
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
@@ -283,6 +289,7 @@ class addInspectionPage(tk.Frame):
         gobackButton.image = goback
         gobackButton.place(x=0, y=200)
 
+<<<<<<< HEAD
         buttons = []
 
         for line in lines:
@@ -311,6 +318,28 @@ class addInspectionPage(tk.Frame):
                 buttons[buttonID].configure(text='Defect added.', fg="black", font=('Arial', 7), image=x, compound= LEFT)
                 buttons[buttonID].image = x
                 statuses[buttons[buttonID].name] = False
+=======
+        def changeStatus():
+            print('Changing from green to red.')
+            page_name = refreshInspectionPage.__name__
+            frame = refreshInspectionPage(parent = container, controller = self)
+            frame.configure(bg='white')
+            frame.grid(row=0, column=0, sticky='nsew')
+            allPages[page_name] = frame
+
+            statuses[1] = False
+            up_frame(page_name)
+            
+class refreshInspectionPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        
+        home = PhotoImage(file='home.png')
+        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: [changeStatus(), up_frame('homePage')])
+        homeButton.image = home
+        homeButton.place(x=0, y=0)
+>>>>>>> 276ff7200bdd33aa073ec58ce252497cd1522ab6
 
         # Adding the title 'Vehicle Inspection Report'.
         y = PhotoImage(file='vehicle-inspection-report.png')
@@ -415,6 +444,9 @@ class addInspectionPage(tk.Frame):
         nextButton.image = next
         nextButton.place(x=1650, y=890)
 
+        def changeStatus():
+            statuses[1] = True
+        
 def main():
     x = MainFrame()
     x.state("zoomed")
