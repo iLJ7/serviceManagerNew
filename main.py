@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import os
+from mailbox import linesep
+from datetime import datetime
+import os, time, copy
 import tkinter as tk
 from truckDB import truckDB
 from tkinter import ttk
@@ -23,6 +25,15 @@ class MainFrame(tk.Tk):
 
         global truckdb
         truckdb = truckDB('trucks.db')
+
+        global lines, statuses
+        lines = []
+        statuses = {}
+
+        for i in range(0, 22):
+            line = 'line' + str(i)
+            statuses[line] = True
+            lines.append(line)
   
         #  Creating the home page.
         page_name = homePage.__name__
@@ -39,11 +50,6 @@ class MainFrame(tk.Tk):
         allPages[page_name] = frame
 
         # Creating the inspection pages.
-        page_name = addInspectionPage.__name__
-        frame = addInspectionPage(parent = container, controller = self)
-        frame.configure(bg='white')
-        frame.grid(row=0, column=0, sticky='nsew')
-        allPages[page_name] = frame
 
         # Creating the info pages
         trucks = truckdb.fetch()
@@ -62,6 +68,12 @@ class MainFrame(tk.Tk):
             frame.configure(bg='white')
             frame.grid(row=0, column=0, sticky='nsew')
             allPages[page_name] = frame
+
+            page_name = addInspectionPage.__name__ + trucks[i][0][:-4]
+            frame = addInspectionPage(parent = container, controller = self, truck = truck)
+            frame.configure(bg='white')
+            frame.grid(row=0, column=0, sticky='nsew')
+            allPages[page_name] = frame 
     
         up_frame('homePage')
 
@@ -195,7 +207,7 @@ class individualTruck(tk.Frame):
         button1.place(x=200, y=10)
 
         AddInspIcon = PhotoImage(file='add-inspection.png')
-        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: [print("Opening add inspection page."), up_frame('addInspectionPage')])
+        addInsp = Button(self, bg='white', image=AddInspIcon, height=180, width=400, borderwidth= 0, command=lambda: [print("Opening add inspection page."), up_frame('addInspectionPage' + truck[0][:-4])])
         addInsp.image = AddInspIcon
         addInsp.place(x=480, y=790)
 
@@ -254,47 +266,154 @@ class infoPage(tk.Frame):
             # Display some info from the database.
         
         initialListboxPopulate()
-        trucks = truckdb.fetch()
-        make, model, color, driver = str(truck[1]), str(truck[2]), str(truck[3]), str(truck[4])
 
 class addInspectionPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, truck):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        
+
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
         homeButton.image = home
         homeButton.place(x=0, y=0)
 
-        line1 = PhotoImage(file="line1.png")
-        line1Button = Button(self, image=line1, borderwidth=0, bg='white', command=lambda: changeStatus())
-        line1Button.image = line1
-        line1Button.pack()
+        print(truck)
+        goback = PhotoImage(file='goback.png')
+        gobackButton = Button(self, image=goback, borderwidth=0, bg='white', command=lambda: [passAllItems(), up_frame(truck[0][:-4])])
+        gobackButton.image = goback
+        gobackButton.place(x=0, y=200)
 
-        def changeStatus():
-            print('Changing from green to red.')
-            page_name = refreshInspectionPage.__name__
-            frame = refreshInspectionPage(parent = container, controller = self)
-            frame.configure(bg='white')
-            frame.grid(row=0, column=0, sticky='nsew')
-            allPages[page_name] = frame
-            up_frame(page_name)
+        buttons = []
+
+        for line in lines:
+            lineimg = PhotoImage(file=line + '.png')
+            lineButton = Button(self, text='Defect added.', fg="white", image=lineimg, borderwidth=0, bg='white')
+            lineButton.image = lineimg
+            lineButton.name = line
+            buttons.append(lineButton)
+        
+        for i, button in enumerate(buttons):
+            button.id = i
+            #print(button.id)
+        
+        def changeIt(buttonID):
+
+            # How do we determine which buttons to change?
+            x = PhotoImage(file='line' + str(buttonID) + '-red' + '.png')
+            y = PhotoImage(file='line' + str(buttonID) + '.png')
             
-class refreshInspectionPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        
-        home = PhotoImage(file='home.png')
-        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
-        homeButton.image = home
-        homeButton.place(x=0, y=0)
+            if statuses[buttons[buttonID].name] is False:
+                buttons[buttonID].configure(text='Defect added.', fg="white", font=('Arial', 7), image=y, compound= LEFT)
+                buttons[buttonID].image = y
+                statuses[buttons[buttonID].name] = True
+            
+            else:
+                buttons[buttonID].configure(text='Defect added.', fg="black", font=('Arial', 7), image=x, compound= LEFT)
+                buttons[buttonID].image = x
+                statuses[buttons[buttonID].name] = False
 
-        line1 = PhotoImage(file="line1-red.png")
-        line1Button = Button(self, image=line1, borderwidth=0, bg='white', command=lambda: up_frame('addInspectionPage'))
-        line1Button.image = line1
-        line1Button.pack()
+        # Adding the title 'Vehicle Inspection Report'.
+        y = PhotoImage(file='vehicle-inspection-report.png')
+        heading = Label(self, image=y, borderwidth=0, relief="groove")
+        heading.image=y
+        heading.pack(pady=(0, 270))
+
+        z = PhotoImage(file='operator.png')
+        check = Label(self, image=z, bg='white', borderwidth=0, width=100)
+        check.image = z
+        check.place(x=185, y=130)
+
+        odometerImage = PhotoImage(file='odometer-reading.png')
+        odometer = Label(self, image=odometerImage, bg='white', borderwidth=0)
+        odometer.image = odometerImage
+        odometer.place(x=174, y=200)
+
+        nameOfInspector = PhotoImage(file='name-of-inspector.png')
+        nameOfInspectorLabel = Label(self, image=nameOfInspector, bg='white', borderwidth=0)
+        nameOfInspectorLabel.image = nameOfInspector
+        nameOfInspectorLabel.place(x=174, y=270)
+
+        odBox = Text(self, height = 1, width = 14)
+        odBox.place(x=370, y=205)
+         
+        insBox = Text(self, height = 1, width = 14)
+        insBox.place(x=370, y=275)
+        
+        clicked = StringVar()
+
+        drop = ttk.OptionMenu(self, clicked, 'John Doe', 'John Doe', 'James Low', 'Henry Smith')
+        drop.place(x=370, y=132)
+        
+        vehicleRegFleetNo = PhotoImage(file='vehicle-reg-fleet-no.png')
+        vehicleRegFleetNoLabel = Label(self, image=vehicleRegFleetNo, bg='white', borderwidth=0)
+        vehicleRegFleetNoLabel.image = vehicleRegFleetNo
+        vehicleRegFleetNoLabel.place(x=600, y=130)
+
+        insideCab = PhotoImage(file='inside-cab.png')
+        insideCabLabel = Label(self, image=insideCab, bg='white', borderwidth=0)
+        insideCabLabel.image = insideCab
+        insideCabLabel.place(x=153, y=345)        
+        
+        vehicleRegFleetNo = PhotoImage(file='vehicle-reg-fleet-no.png')
+        vehicleRegFleetNoLabel = Label(self, image=vehicleRegFleetNo, bg='white', borderwidth=0)
+        vehicleRegFleetNoLabel.image = vehicleRegFleetNo
+        vehicleRegFleetNoLabel.place(x=600, y=130)
+
+        vehicleRegFleetText = truck[0][:-4]
+        vehicleRegFleetNoLabel = Label(self, text=vehicleRegFleetText, bg='white', borderwidth=0, font=('Arial', 12))
+        vehicleRegFleetNoLabel.place(x=808, y=132)
+
+        vehicleMakeModel = PhotoImage(file='make-model.png')
+        vehicleMakeModelLabel = Label(self, image=vehicleMakeModel, bg='white', borderwidth=0)
+        vehicleMakeModelLabel.image = vehicleMakeModel
+        vehicleMakeModelLabel.place(x=600, y=200)
+        
+        vehicleMakeAndModel = truck[1] + ' ' + truck[2]
+        print(vehicleMakeAndModel)
+        vehicleMakeModelAnswer = Label(self, text=vehicleMakeAndModel, bg='white', borderwidth=0, font=('Arial', 12))
+        vehicleMakeModelAnswer.place(x=808, y=202)
+
+        date = PhotoImage(file='date.png')
+        dateLabel = Label(self, image=date, bg='white', borderwidth=0)
+        dateLabel.image = date
+        dateLabel.place(x=600, y=270)
+
+        now = datetime.now()
+        currentDate = str(now.strftime("%d/%m/%Y"))
+
+        dateLabelAnswer = Label(self, text=currentDate, bg='white', borderwidth=0, font=('Arial', 12))
+        dateLabelAnswer.place(x=808, y=273)
+
+        for i, button in enumerate(buttons):
+            index = copy.deepcopy(button.id)
+            button.configure(command= lambda index=index: changeIt(index), text='Defect added.', fg="white", font=('Arial', 7), compound= LEFT)
+            button.pack(padx=(0, 310))
+        
+
+        heading = PhotoImage(file='heading.png')
+        headingLabel = Label(self, image=heading, bg='black', borderwidth=1, font=('Arial', 12))
+        headingLabel.image = heading
+        headingLabel.place(x=190, y=370)
+
+        passAll = PhotoImage(file='pass-all.png')
+        passAllButton = Button(self, image=passAll, bg='white', borderwidth=0, command= lambda: passAllItems())
+        passAllButton.image = passAll
+        passAllButton.place(x=1650, y=381)
+
+        def passAllItems():
+            for i, button in enumerate(buttons):
+                t = PhotoImage(file=lines[i] + ".png")
+                button.image = t
+                button.configure(image=t, text='Defect added.', fg="white", font=('Arial', 7), compound= LEFT)
+                statuses[buttons[i].name] = True
+                clicked.set('John Doe')
+                odBox.delete('1.0', END)
+                insBox.delete('1.0', END)
+        
+        next = PhotoImage(file='next.png')
+        nextButton = Button(self, image=next, bg='white', borderwidth=0)
+        nextButton.image = next
+        nextButton.place(x=1650, y=890)
 
 def main():
     x = MainFrame()
