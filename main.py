@@ -4,6 +4,7 @@ from datetime import datetime
 import os, time, copy
 import tkinter as tk
 from truckDB import truckDB
+from rectificationDB import rectificationDB 
 from tkinter import ttk
 from datetime import datetime
 from tkinter import *
@@ -30,7 +31,7 @@ class MainFrame(tk.Tk):
         lines = []
         statuses = {}
 
-        for i in range(0, 22):
+        for i in range(0, 67):
             line = 'line' + str(i)
             statuses[line] = True
             lines.append(line)
@@ -70,10 +71,12 @@ class MainFrame(tk.Tk):
             allPages[page_name] = frame
 
             page_name = addInspectionPage.__name__ + trucks[i][0][:-4]
-            frame = addInspectionPage(parent = container, controller = self, truck = truck)
+            frame = addInspectionPage(parent = container, controller = self, truck = truck, index = 1)
             frame.configure(bg='white')
             frame.grid(row=0, column=0, sticky='nsew')
-            allPages[page_name] = frame 
+            allPages[page_name] = frame
+            global currentPage
+            currentPage = 1
     
         up_frame('homePage')
 
@@ -268,15 +271,9 @@ class infoPage(tk.Frame):
         initialListboxPopulate()
 
 class addInspectionPage(tk.Frame):
-    def __init__(self, parent, controller, truck):
+    def __init__(self, parent, controller, truck, index=1):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-<<<<<<< HEAD
-=======
-        
-        global statuses
-        statuses = {}
->>>>>>> 276ff7200bdd33aa073ec58ce252497cd1522ab6
 
         home = PhotoImage(file='home.png')
         homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: up_frame('homePage'))
@@ -285,20 +282,28 @@ class addInspectionPage(tk.Frame):
 
         print(truck)
         goback = PhotoImage(file='goback.png')
-        gobackButton = Button(self, image=goback, borderwidth=0, bg='white', command=lambda: [passAllItems(), up_frame(truck[0][:-4])])
+        gobackButton = Button(self, image=goback, borderwidth=0, bg='white', command=lambda: [print('test'), passAllItems(), up_frame(truck[0][:-4])])
         gobackButton.image = goback
         gobackButton.place(x=0, y=200)
 
-<<<<<<< HEAD
         buttons = []
 
-        for line in lines:
-            lineimg = PhotoImage(file=line + '.png')
-            lineButton = Button(self, text='Defect added.', fg="white", image=lineimg, borderwidth=0, bg='white')
-            lineButton.image = lineimg
-            lineButton.name = line
-            buttons.append(lineButton)
-        
+        def buttonsFill():
+            for i, line in enumerate(lines):
+                lineimg = PhotoImage(file=line + '.png')
+                lineButton = Button(self, text='Defect added.', fg="white", image=lineimg, borderwidth=0, bg='white')
+                lineButton.image = lineimg
+                lineButton.name = line
+                index = i
+                lineButton.configure(command= lambda index=index: changeIt(index), text='Defect added.', fg="white", font=('Arial', 7), compound= LEFT)
+                buttons.append(lineButton)
+
+        print(lines)
+
+        def fill(a, z):
+            for button in buttons[a:z]:
+                button.pack(padx=(0, 310))
+
         for i, button in enumerate(buttons):
             button.id = i
             #print(button.id)
@@ -318,28 +323,6 @@ class addInspectionPage(tk.Frame):
                 buttons[buttonID].configure(text='Defect added.', fg="black", font=('Arial', 7), image=x, compound= LEFT)
                 buttons[buttonID].image = x
                 statuses[buttons[buttonID].name] = False
-=======
-        def changeStatus():
-            print('Changing from green to red.')
-            page_name = refreshInspectionPage.__name__
-            frame = refreshInspectionPage(parent = container, controller = self)
-            frame.configure(bg='white')
-            frame.grid(row=0, column=0, sticky='nsew')
-            allPages[page_name] = frame
-
-            statuses[1] = False
-            up_frame(page_name)
-            
-class refreshInspectionPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        
-        home = PhotoImage(file='home.png')
-        homeButton = Button(self, image=home, borderwidth=0, bg='white', command=lambda: [changeStatus(), up_frame('homePage')])
-        homeButton.image = home
-        homeButton.place(x=0, y=0)
->>>>>>> 276ff7200bdd33aa073ec58ce252497cd1522ab6
 
         # Adding the title 'Vehicle Inspection Report'.
         y = PhotoImage(file='vehicle-inspection-report.png')
@@ -350,33 +333,33 @@ class refreshInspectionPage(tk.Frame):
         z = PhotoImage(file='operator.png')
         check = Label(self, image=z, bg='white', borderwidth=0, width=100)
         check.image = z
-        check.place(x=185, y=130)
+        check.place(x=245, y=140)
 
         odometerImage = PhotoImage(file='odometer-reading.png')
         odometer = Label(self, image=odometerImage, bg='white', borderwidth=0)
         odometer.image = odometerImage
-        odometer.place(x=174, y=200)
+        odometer.place(x=232, y=210)
 
         nameOfInspector = PhotoImage(file='name-of-inspector.png')
         nameOfInspectorLabel = Label(self, image=nameOfInspector, bg='white', borderwidth=0)
         nameOfInspectorLabel.image = nameOfInspector
-        nameOfInspectorLabel.place(x=174, y=270)
+        nameOfInspectorLabel.place(x=234, y=280)
 
         odBox = Text(self, height = 1, width = 14)
-        odBox.place(x=370, y=205)
+        odBox.place(x=430, y=215)
          
         insBox = Text(self, height = 1, width = 14)
-        insBox.place(x=370, y=275)
+        insBox.place(x=430, y=285)
         
         clicked = StringVar()
 
         drop = ttk.OptionMenu(self, clicked, 'John Doe', 'John Doe', 'James Low', 'Henry Smith')
-        drop.place(x=370, y=132)
+        drop.place(x=430, y=142)
         
         vehicleRegFleetNo = PhotoImage(file='vehicle-reg-fleet-no.png')
         vehicleRegFleetNoLabel = Label(self, image=vehicleRegFleetNo, bg='white', borderwidth=0)
         vehicleRegFleetNoLabel.image = vehicleRegFleetNo
-        vehicleRegFleetNoLabel.place(x=600, y=130)
+        vehicleRegFleetNoLabel.place(x=600, y=140)
 
         insideCab = PhotoImage(file='inside-cab.png')
         insideCabLabel = Label(self, image=insideCab, bg='white', borderwidth=0)
@@ -386,39 +369,33 @@ class refreshInspectionPage(tk.Frame):
         vehicleRegFleetNo = PhotoImage(file='vehicle-reg-fleet-no.png')
         vehicleRegFleetNoLabel = Label(self, image=vehicleRegFleetNo, bg='white', borderwidth=0)
         vehicleRegFleetNoLabel.image = vehicleRegFleetNo
-        vehicleRegFleetNoLabel.place(x=600, y=130)
+        vehicleRegFleetNoLabel.place(x=600, y=140)
 
         vehicleRegFleetText = truck[0][:-4]
         vehicleRegFleetNoLabel = Label(self, text=vehicleRegFleetText, bg='white', borderwidth=0, font=('Arial', 12))
-        vehicleRegFleetNoLabel.place(x=808, y=132)
+        vehicleRegFleetNoLabel.place(x=808, y=142)
 
         vehicleMakeModel = PhotoImage(file='make-model.png')
         vehicleMakeModelLabel = Label(self, image=vehicleMakeModel, bg='white', borderwidth=0)
         vehicleMakeModelLabel.image = vehicleMakeModel
-        vehicleMakeModelLabel.place(x=600, y=200)
+        vehicleMakeModelLabel.place(x=600, y=210)
         
         vehicleMakeAndModel = truck[1] + ' ' + truck[2]
         print(vehicleMakeAndModel)
         vehicleMakeModelAnswer = Label(self, text=vehicleMakeAndModel, bg='white', borderwidth=0, font=('Arial', 12))
-        vehicleMakeModelAnswer.place(x=808, y=202)
+        vehicleMakeModelAnswer.place(x=808, y=212)
 
         date = PhotoImage(file='date.png')
         dateLabel = Label(self, image=date, bg='white', borderwidth=0)
         dateLabel.image = date
-        dateLabel.place(x=600, y=270)
+        dateLabel.place(x=600, y=280)
 
         now = datetime.now()
         currentDate = str(now.strftime("%d/%m/%Y"))
 
         dateLabelAnswer = Label(self, text=currentDate, bg='white', borderwidth=0, font=('Arial', 12))
-        dateLabelAnswer.place(x=808, y=273)
-
-        for i, button in enumerate(buttons):
-            index = copy.deepcopy(button.id)
-            button.configure(command= lambda index=index: changeIt(index), text='Defect added.', fg="white", font=('Arial', 7), compound= LEFT)
-            button.pack(padx=(0, 310))
+        dateLabelAnswer.place(x=808, y=283)
         
-
         heading = PhotoImage(file='heading.png')
         headingLabel = Label(self, image=heading, bg='black', borderwidth=1, font=('Arial', 12))
         headingLabel.image = heading
@@ -429,24 +406,274 @@ class refreshInspectionPage(tk.Frame):
         passAllButton.image = passAll
         passAllButton.place(x=1650, y=381)
 
+        buttonsFill()
+        fill(0, 22)
+
         def passAllItems():
-            for i, button in enumerate(buttons):
-                t = PhotoImage(file=lines[i] + ".png")
-                button.image = t
-                button.configure(image=t, text='Defect added.', fg="white", font=('Arial', 7), compound= LEFT)
-                statuses[buttons[i].name] = True
-                clicked.set('John Doe')
-                odBox.delete('1.0', END)
-                insBox.delete('1.0', END)
+            
+            clicked.set('John Doe')
+            odBox.delete('1.0', END)
+            insBox.delete('1.0', END)
+            
+            try:
+                for i, button in enumerate(buttons):
+                    t = PhotoImage(file=lines[i] + ".png")
+                    button.image = t
+                    button.configure(image=t, text='Defect added.', fg="white", font=('Arial', 7), compound= LEFT)
+                    statuses[buttons[i].name] = True
+            
+            except:
+                pass
         
-        next = PhotoImage(file='next.png')
-        nextButton = Button(self, image=next, bg='white', borderwidth=0)
+        next = PhotoImage(file='next-2-3.png')
+        nextButton = Button(self, image=next, bg='white', borderwidth=0, command=lambda: nextPage())
         nextButton.image = next
         nextButton.place(x=1650, y=890)
-
-        def changeStatus():
-            statuses[1] = True
         
+        prev = PhotoImage(file='prev-1-3.png')
+        prevButton = Button(self, bg='white', borderwidth=0, command=lambda: prevPage())
+        prevButton.image = prev
+        prevButton.place(x=20, y=890)
+
+        finish = PhotoImage(file='finish.png')
+        finishButton = Button(self, bg='white', borderwidth=0, command=lambda: [finishPage()])
+        finishButton.image = finish
+        finishButton.place(x=1650, y=890)
+
+        def nextPage():
+
+            for button in buttons:
+                button.pack_forget()
+
+            global currentPage
+            currentPage += 1
+            print(currentPage)
+
+            if currentPage == 1:
+                finishButton.place_forget()
+                next1 = PhotoImage(file='next-2-3.png')
+                nextButton.configure(image=next1)
+                nextButton.image(next1)
+
+                fill(0, 22)
+
+            elif currentPage == 2:
+                finishButton.place_forget()
+                next2 = PhotoImage(file='next-3-3.png')
+                nextButton.configure(image=next2)
+                nextButton.image = next2
+
+                prev1 = PhotoImage(file='prev-1-3.png')
+                prevButton.configure(image=prev1)
+                prevButton.image = prev1
+                prevButton.place(x=7, y=890)
+
+                fill(22, 45) # fill the respective pages
+            
+            else:
+                nextButton.place_forget()
+                
+                prev2 = PhotoImage(file='prev-2-3.png')
+                prevButton.configure(image=prev2)
+                prevButton.image = prev2
+                prevButton.place(x=7, y=890)
+
+                finish = PhotoImage(file='finish.png')
+                finishButton.configure(image=finish)
+                finishButton.image = finish
+                finishButton.place(x=1650, y=890)
+
+                fill(45, 68) # fill the respective pages
+                
+            print(truck)
+        
+        def prevPage():
+
+            for button in buttons:
+                button.pack_forget()
+
+            global currentPage
+            currentPage -= 1
+            
+            print(currentPage)
+
+            if currentPage == 1:
+                
+                finishButton.place_forget()
+                next1 = PhotoImage(file='next-2-3.png')
+                nextButton.configure(image=next1)
+                nextButton.image = next1
+                nextButton.place(x=1650, y=890)
+
+                prevButton.place_forget()
+                fill(0, 22)
+
+            elif currentPage == 2:
+
+                finishButton.place_forget()
+                next2 = PhotoImage(file='next-3-3.png')
+                nextButton.configure(image=next2)
+                nextButton.image = next2
+                nextButton.place(x=1650, y=890)
+
+                prev1 = PhotoImage(file='prev-1-3.png')
+                prevButton.configure(image=prev1)
+                prevButton.image = prev1
+                prevButton.place(x=7, y=890)
+                fill(22, 45)
+
+            else:
+                nextButton.place_forget()
+                prev2 = PhotoImage(file='prev-2-3.png')
+                prevButton.configure(image=prev2)
+                prevButton.image = prev2
+                prevButton.place(x=7, y=890)
+                fill(45, 68) # fill the respective pages
+
+        def finishPage():
+            headingLabel.place_forget()
+            prevButton.place_forget()
+            finishButton.place_forget()
+            insideCabLabel.place_forget()
+            passAllButton.place_forget()
+
+            for button in buttons:
+                button.pack_forget()
+
+            headingRectification = PhotoImage(file='heading-rectification.png')
+            headingRectificationLabel = Label(self, image=headingRectification, bg='black', borderwidth=1, font=('Arial', 12))
+            headingRectificationLabel.image = headingRectification
+            headingRectificationLabel.place(x=251, y=375)
+
+            cancel = PhotoImage(file='cancel.png')
+            cancelButton = Button(self, image=cancel, borderwidth = 0, bg='white', command=lambda: cancel())
+            cancelButton.image = cancel
+            cancelButton.place(x=230, y=890)
+
+            def cancel():
+
+                print('Cancelling')
+                next1 = PhotoImage(file='next-2-3.png')
+                nextButton.configure(image=next1)
+                nextButton.image = next1
+                nextButton.place(x=1650, y=890)
+
+                passAllItems()
+
+                addRectificationButton.place_forget()
+                cancelButton.place_forget()
+                headingRectificationLabel.place_forget()
+                headingLabel.place(x=190, y=370)
+
+                for label in rectLabels:
+                    label.place_forget()
+
+                global currentPage
+                currentPage = 1
+                fill(0, 22)
+
+            addRectification = PhotoImage(file='add-rectification.png')
+            addRectificationButton = Button(self, image=addRectification, borderwidth = 0, bg='white', command=lambda: addRect())
+            addRectificationButton.image = addRectification
+            addRectificationButton.place(x=760, y=876)
+
+            rectDB = rectificationDB('rectifications.db')
+            rects = rectDB.fetch()
+
+            rectLabels = []
+
+            for i, rect in enumerate(rects):
+                checkNo = rect[1]
+                rectAction = rect[2]
+                rectBy = rect[3]
+
+                print(checkNo, rectAction, rectBy)
+
+                checkNoLabel = Label(self, text=checkNo, bg='white', font='Arial')
+                checkNoLabel.text = checkNo
+                checkNoLabel.place(x=310, y=430 + (i * 30))
+                rectLabels.append(checkNoLabel)
+
+                rectActionLabel = Label(self, text=rectAction, width=20, borderwidth=0, bg='white', relief='solid', font='Arial')
+                rectActionLabel.text = rectAction
+                rectActionLabel.place(x=830, y=430 + (i * 30))
+                rectLabels.append(rectActionLabel)
+
+                rectByLabel = Label(self, text=rectBy, width=20, borderwidth=0, bg='white', relief='solid', font='Arial')
+                rectByLabel.text = rectBy
+                rectByLabel.place(x=1484, y=430 + (i * 30))
+                rectLabels.append(rectByLabel)
+
+                #a = Label(self, text = " ".join(rect[1:2]) + " " * 100 + " ".join(rect[2:3]), bg='white', font='Arial')
+                #a.pack()
+
+            # Prompt box
+
+            def addRect():
+                x = Toplevel(self, height=200, width=350)
+                x.title('Add Rectification')
+
+                checkNoText = Label(x, text='Check No:')
+                checkNoText.place(x=1, y=1)
+                checkNoBox = Text(x, height=1, width=15)
+                checkNoBox.place(x=150, y=5)
+
+                rectActionText = Label(x, text='Rectification Action: ')
+                rectActionText.place(x=1, y=40)
+                rectActionBox = Text(x, height=1, width=15)
+                rectActionBox.place(x=150, y=43)
+
+                rectByText = Label(x, text='Rectified by:')
+                rectByText.place(x=1, y=78)
+                rectByBox = Text(x, height=1, width=15)
+                rectByBox.place(x=150, y=81)
+
+                confirmRect = Button(x, text='Confirm rectification.', command=lambda: [print('Trying to add rectification.'), insertRect()])
+                confirmRect.place(x=100, y=130)
+                
+                def insertRect():
+
+                    a = checkNoBox.get("1.0",END).strip()
+                    b = rectActionBox.get("1.0",END).strip()
+                    c = rectByBox.get("1.0",END).strip()
+
+                    rectDB.insert(truck[0], a, b, c)
+
+                    rects = rectDB.fetch()
+                    lastRect = rects[len(rects) - 1]
+                    print(lastRect)
+              
+                    checkNo = lastRect[1]
+                    rectAction = lastRect[2]
+                    rectBy = lastRect[3]
+
+                    print(checkNo, rectAction, rectBy)
+
+                    checkNoLabel = Label(self, text=checkNo, bg='white', font='Arial')
+                    checkNoLabel.text = checkNo
+                    checkNoLabel.place(x=310, y=430 + ((len(rects) - 1) * 30))
+
+                    rectActionLabel = Label(self, text=rectAction, width=20, bg='white', font='Arial')
+                    rectActionLabel.text = rectAction
+                    rectActionLabel.place(x=830, y=430 + ((len(rects) - 1) * 30))
+
+                    rectByLabel = Label(self, text=rectBy, width=20, bg='white', font='Arial')
+                    rectByLabel.text = rectBy
+                    rectByLabel.place(x=1484, y=430 + ((len(rects) - 1) * 30))
+
+                    rectLabels.append(checkNoLabel)
+                    rectLabels.append(rectActionLabel)
+                    rectLabels.append(rectByLabel)
+
+                    #test = Label(self, text='55' + (' ' * 97) + 'Test' + (' ' * 107) + 'Hi', borderwidth = 0, bg='white', font='Arial')
+                    #test.place(x=300, y=440)
+                
+                    x.destroy()
+
+                # Now, we want to store these and insert it into a database. We will call this database the rectification database.
+                
+            print('Finishing.')
+
 def main():
     x = MainFrame()
     x.state("zoomed")
