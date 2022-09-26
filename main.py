@@ -347,7 +347,7 @@ class addInspectionPage(tk.Frame):
 
         odBox = Text(self, height = 1, width = 14)
         odBox.place(x=430, y=215)
-         
+        
         insBox = Text(self, height = 1, width = 14)
         insBox.place(x=430, y=285)
         
@@ -439,6 +439,9 @@ class addInspectionPage(tk.Frame):
         finishButton = Button(self, bg='white', borderwidth=0, command=lambda: [finishPage()])
         finishButton.image = finish
         finishButton.place(x=1650, y=890)
+
+        global rectLabels
+        rectLabels = []
 
         def nextPage():
 
@@ -536,6 +539,12 @@ class addInspectionPage(tk.Frame):
             finishButton.place_forget()
             insideCabLabel.place_forget()
             passAllButton.place_forget()
+            # We also want to remove past rectifications.
+
+            global rectLabels
+
+            for label in rectLabels:
+                label.place_forget()
 
             global generateSheetButton
             try:
@@ -681,11 +690,26 @@ class addInspectionPage(tk.Frame):
                 if selectedSignature is None:
                     print('Select a signature first.')
 
-                
+                print('We need to capture the information.')
+
+                print('-------------')
+                print(truck)
+                print(selectedSignature)
+                print(clicked.get())
+                print(odBox.get('1.0',END).strip())
+                print(insBox.get('1.0',END).strip())
+                print(truck[0])
+                now = datetime.now()
+                currentDate = str(now.strftime("%d/%m/%Y"))
+                print(currentDate)
+
+                rectDB = rectificationDB('rectifications.db')
+                rects = rectDB.fetch()
+                    
             rectDB = rectificationDB('rectifications.db')
             rects = rectDB.fetch()
-
-            rectLabels = []
+            print(rects)
+            print(truck[0])
 
             for i, rect in enumerate(rects):
                 checkNo = rect[1]
@@ -696,18 +720,20 @@ class addInspectionPage(tk.Frame):
 
                 checkNoLabel = Label(self, text=checkNo, bg='white', font='Arial')
                 checkNoLabel.text = checkNo
-                checkNoLabel.place(x=310, y=430 + (i * 30))
                 rectLabels.append(checkNoLabel)
 
                 rectActionLabel = Label(self, text=rectAction, width=20, borderwidth=0, bg='white', relief='solid', font='Arial')
                 rectActionLabel.text = rectAction
-                rectActionLabel.place(x=830, y=430 + (i * 30))
                 rectLabels.append(rectActionLabel)
 
                 rectByLabel = Label(self, text=rectBy, width=20, borderwidth=0, bg='white', relief='solid', font='Arial')
                 rectByLabel.text = rectBy
-                rectByLabel.place(x=1484, y=430 + (i * 30))
                 rectLabels.append(rectByLabel)
+
+                if rect[0] == truck[0]:
+                    checkNoLabel.place(x=310, y=430 + (i * 30))
+                    rectActionLabel.place(x=830, y=430 + (i * 30))
+                    rectByLabel.place(x=1484, y=430 + (i * 30))
 
                 #a = Label(self, text = " ".join(rect[1:2]) + " " * 100 + " ".join(rect[2:3]), bg='white', font='Arial')
                 #a.pack()
