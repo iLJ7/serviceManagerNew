@@ -1,4 +1,3 @@
-Sunday
-Signatures
-'Generate' feature.
+Monday
+'Generate' feature - Mimick the sheet, with everything 'sideways' on the screen.
 'View inspections' page

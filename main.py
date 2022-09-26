@@ -537,6 +537,36 @@ class addInspectionPage(tk.Frame):
             insideCabLabel.place_forget()
             passAllButton.place_forget()
 
+            global generateSheetButton
+            try:
+                generateSheetButton.place_forget()
+
+            except:
+                pass
+
+            try:
+                global signatureOfInspectorLabel
+                signatureOfInspectorLabel.pack_forget()
+
+            except:
+                pass
+
+            try:
+                global backToRectificationsButton
+                backToRectificationsButton.place_forget()
+
+            except:
+                pass
+
+            try:
+                global signatureButtons
+
+                for button in signatureButtons:
+                    button.pack_forget()
+            
+            except:
+                pass
+
             for button in buttons:
                 button.pack_forget()
 
@@ -546,11 +576,11 @@ class addInspectionPage(tk.Frame):
             headingRectificationLabel.place(x=251, y=375)
 
             cancel = PhotoImage(file='cancel.png')
-            cancelButton = Button(self, image=cancel, borderwidth = 0, bg='white', command=lambda: cancel())
+            cancelButton = Button(self, image=cancel, borderwidth = 0, bg='white', command=lambda: cancelIt())
             cancelButton.image = cancel
             cancelButton.place(x=230, y=890)
 
-            def cancel():
+            def cancelIt():
 
                 print('Cancelling')
                 next1 = PhotoImage(file='next-2-3.png')
@@ -563,6 +593,7 @@ class addInspectionPage(tk.Frame):
                 addRectificationButton.place_forget()
                 cancelButton.place_forget()
                 headingRectificationLabel.place_forget()
+                signButton.place_forget()
                 headingLabel.place(x=190, y=370)
 
                 for label in rectLabels:
@@ -577,6 +608,80 @@ class addInspectionPage(tk.Frame):
             addRectificationButton.image = addRectification
             addRectificationButton.place(x=760, y=876)
 
+            sign = PhotoImage(file='sign.png')
+            signButton = Button(self, image=sign, borderwidth = 0, bg='white', command=lambda: signIt())
+            signButton.image = sign
+            signButton.place(x=1430, y=876)
+            
+            def signIt():
+                
+                print('Opening sign page.')
+                headingRectificationLabel.place_forget()
+                addRectificationButton.place_forget()
+                signButton.place_forget()
+                cancelButton.place_forget()
+
+                for label in rectLabels:
+                    label.place_forget()
+
+                global signatureOfInspectorLabel
+
+                signatureOfInspector = PhotoImage(file='signature-of-inspector.png')
+                signatureOfInspectorLabel = Label(self, image=signatureOfInspector, borderwidth=0)
+                signatureOfInspectorLabel.image = signatureOfInspector
+                signatureOfInspectorLabel.pack()
+
+                global backToRectificationsButton
+
+                backToRectifications = PhotoImage(file='rectificationsBack.png')
+                backToRectificationsButton = Button(self, image=backToRectifications, borderwidth = 0, bg='white', command=lambda: finishPage())
+                backToRectificationsButton.image = backToRectifications
+                backToRectificationsButton.place(x=5, y=900)
+
+                global generateSheetButton
+                generateSheet = PhotoImage(file='generate-sheet.png')
+                generateSheetButton = Button(self, image=generateSheet, borderwidth = 0, bg='white', command=lambda: generate())
+                generateSheetButton.image = generateSheet
+                generateSheetButton.place(x=1450, y=900)
+
+                signatures = ['signature-luke.png', 'signature-alex.png']
+                global signatureButtons
+                signatureButtons = []
+
+                for index, sig in enumerate(signatures):
+                    sigImage = PhotoImage(file='signatures/' + sig)
+                    sigButton = Button(self, text='Defect added.', fg="white", image=sigImage, command= lambda index=index: selectSignature(index),  borderwidth=0, bg='white')
+                    sigButton.image = sigImage
+                    signatureButtons.append(sigButton)
+                
+                for button in signatureButtons:
+                    button.pack()
+
+                global selectedSignature
+                selectedSignature = None
+
+                def selectSignature(index):
+                    print('Changing signature')
+
+                    global selectedSignature
+                    selectedSignature = index
+
+                    signatureButtons[index].configure(borderwidth = 1, relief='groove')
+
+                    for i, button in enumerate(signatureButtons):
+                        if i != selectedSignature:
+                            button.configure(borderwidth = 0)
+
+                    print(selectedSignature)
+
+
+            def generate():
+                # Here, we generate our inspection page.
+
+                if selectedSignature is None:
+                    print('Select a signature first.')
+
+                
             rectDB = rectificationDB('rectifications.db')
             rects = rectDB.fetch()
 
@@ -664,13 +769,8 @@ class addInspectionPage(tk.Frame):
                     rectLabels.append(checkNoLabel)
                     rectLabels.append(rectActionLabel)
                     rectLabels.append(rectByLabel)
-
-                    #test = Label(self, text='55' + (' ' * 97) + 'Test' + (' ' * 107) + 'Hi', borderwidth = 0, bg='white', font='Arial')
-                    #test.place(x=300, y=440)
                 
                     x.destroy()
-
-                # Now, we want to store these and insert it into a database. We will call this database the rectification database.
                 
             print('Finishing.')
 
