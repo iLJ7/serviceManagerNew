@@ -604,6 +604,7 @@ class addInspectionPage(tk.Frame):
                 headingRectificationLabel.place_forget()
                 signButton.place_forget()
                 headingLabel.place(x=190, y=370)
+                passAllButton.place(x=1650, y=381)
 
                 for label in rectLabels:
                     label.place_forget()
@@ -687,12 +688,14 @@ class addInspectionPage(tk.Frame):
             def generate():
                 # Here, we generate our inspection page.
 
+                print('-------------')
                 if selectedSignature is None:
                     print('Select a signature first.')
 
                 print('We need to capture the information.')
 
-                print('-------------')
+                # Here we capture some important information. This goes in our 'view inspection' DB.
+                print(statuses)
                 print(truck)
                 print(selectedSignature)
                 print(clicked.get())
@@ -703,15 +706,19 @@ class addInspectionPage(tk.Frame):
                 currentDate = str(now.strftime("%d/%m/%Y"))
                 print(currentDate)
 
+                # Capture the relevant rectifications.
                 rectDB = rectificationDB('rectifications.db')
                 rects = rectDB.fetch()
-                    
+                for rect in rects:
+                    if rect[0] == truck[0]:
+                        print(rect)
+
             rectDB = rectificationDB('rectifications.db')
             rects = rectDB.fetch()
-            print(rects)
             print(truck[0])
 
-            for i, rect in enumerate(rects):
+            i = 0
+            for rect in rects:
                 checkNo = rect[1]
                 rectAction = rect[2]
                 rectBy = rect[3]
@@ -734,6 +741,7 @@ class addInspectionPage(tk.Frame):
                     checkNoLabel.place(x=310, y=430 + (i * 30))
                     rectActionLabel.place(x=830, y=430 + (i * 30))
                     rectByLabel.place(x=1484, y=430 + (i * 30))
+                    i += 1
 
                 #a = Label(self, text = " ".join(rect[1:2]) + " " * 100 + " ".join(rect[2:3]), bg='white', font='Arial')
                 #a.pack()
