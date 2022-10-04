@@ -584,6 +584,26 @@ class addInspectionPage(tk.Frame):
             headingRectificationLabel.image = headingRectification
             headingRectificationLabel.place(x=251, y=375)
 
+            resetRects = PhotoImage(file='pass-all.png')
+            resetRectsButton = Button(self, image=resetRects, bg='white', borderwidth=0, command= lambda: clearRectifications())
+            resetRectsButton.image = resetRects
+            resetRectsButton.place(x=1680, y=385)
+
+            def clearRectifications():
+                print('Clearing rectifications from: ' + truck[0])
+
+                # We want to remove the entry from the database.
+                rectDB.remove(truck[0])
+
+                # Now, place_forget() the labels.
+
+                for label in rectLabels:
+                    label.place_forget()
+
+                # Reset i to 0 so the placing is correct.
+                global i
+                i = 0
+
             cancel = PhotoImage(file='cancel.png')
             cancelButton = Button(self, image=cancel, borderwidth = 0, bg='white', command=lambda: cancelIt())
             cancelButton.image = cancel
@@ -603,6 +623,8 @@ class addInspectionPage(tk.Frame):
                 cancelButton.place_forget()
                 headingRectificationLabel.place_forget()
                 signButton.place_forget()
+                resetRectsButton.place_forget()
+
                 headingLabel.place(x=190, y=370)
                 passAllButton.place(x=1650, y=381)
 
@@ -630,6 +652,7 @@ class addInspectionPage(tk.Frame):
                 addRectificationButton.place_forget()
                 signButton.place_forget()
                 cancelButton.place_forget()
+                resetRectsButton.place_forget()
 
                 for label in rectLabels:
                     label.place_forget()
@@ -717,7 +740,9 @@ class addInspectionPage(tk.Frame):
             rects = rectDB.fetch()
             print(truck[0])
 
+            global i
             i = 0
+            
             for rect in rects:
                 checkNo = rect[1]
                 rectAction = rect[2]
@@ -739,8 +764,8 @@ class addInspectionPage(tk.Frame):
 
                 if rect[0] == truck[0]:
                     checkNoLabel.place(x=310, y=430 + (i * 30))
-                    rectActionLabel.place(x=830, y=430 + (i * 30))
-                    rectByLabel.place(x=1484, y=430 + (i * 30))
+                    rectActionLabel.place(x=840, y=430 + (i * 30))
+                    rectByLabel.place(x=1505, y=430 + (i * 30))
                     i += 1
 
                 #a = Label(self, text = " ".join(rect[1:2]) + " " * 100 + " ".join(rect[2:3]), bg='white', font='Arial')
@@ -787,18 +812,26 @@ class addInspectionPage(tk.Frame):
                     rectBy = lastRect[3]
 
                     print(checkNo, rectAction, rectBy)
+                    print(len(rects))
 
                     checkNoLabel = Label(self, text=checkNo, bg='white', font='Arial')
                     checkNoLabel.text = checkNo
-                    checkNoLabel.place(x=310, y=430 + ((len(rects) - 1) * 30))
 
                     rectActionLabel = Label(self, text=rectAction, width=20, bg='white', font='Arial')
                     rectActionLabel.text = rectAction
-                    rectActionLabel.place(x=830, y=430 + ((len(rects) - 1) * 30))
 
                     rectByLabel = Label(self, text=rectBy, width=20, bg='white', font='Arial')
                     rectByLabel.text = rectBy
-                    rectByLabel.place(x=1484, y=430 + ((len(rects) - 1) * 30))
+
+                    if len(rects) == 1:
+                        checkNoLabel.place(x=310, y=430)
+                        rectActionLabel.place(x=830, y=430)
+                        rectByLabel.place(x=1484, y=430)
+
+                    else:
+                        checkNoLabel.place(x=310, y=430 + ((len(rects) - 1) * 30))
+                        rectActionLabel.place(x=830, y=430 + ((len(rects) - 1) * 30))
+                        rectByLabel.place(x=1484, y=430 + ((len(rects) - 1) * 30))
 
                     rectLabels.append(checkNoLabel)
                     rectLabels.append(rectActionLabel)

@@ -16,9 +16,9 @@ class rectificationDB:
         self.cur.execute("INSERT INTO rectifications VALUES (?, ?, ?, ?)", (reg, checkno, action, rectifiedby))
         self.conn.commit()
     
-    #def remove(self, reg):
-        #self.cur.execute("DELETE FROM trucks WHERE reg = ?", (reg,))
-        #self.conn.commit()
+    def remove(self, reg):
+        self.cur.execute("DELETE FROM rectifications WHERE reg = ?", (reg,))
+        self.conn.commit()
     
     #def updateDriver(self, reg, driver):
         #self.cur.execute("UPDATE trucks SET driver = ? WHERE reg = ?", (driver, reg))
