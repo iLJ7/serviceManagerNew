@@ -825,13 +825,13 @@ class addInspectionPage(tk.Frame):
 
                     if len(rects) == 1:
                         checkNoLabel.place(x=310, y=430)
-                        rectActionLabel.place(x=830, y=430)
-                        rectByLabel.place(x=1484, y=430)
+                        rectActionLabel.place(x=840, y=430)
+                        rectByLabel.place(x=1505, y=430)
 
                     else:
                         checkNoLabel.place(x=310, y=430 + ((len(rects) - 1) * 30))
-                        rectActionLabel.place(x=830, y=430 + ((len(rects) - 1) * 30))
-                        rectByLabel.place(x=1484, y=430 + ((len(rects) - 1) * 30))
+                        rectActionLabel.place(x=840, y=430 + ((len(rects) - 1) * 30))
+                        rectByLabel.place(x=1505, y=430 + ((len(rects) - 1) * 30))
 
                     rectLabels.append(checkNoLabel)
                     rectLabels.append(rectActionLabel)
