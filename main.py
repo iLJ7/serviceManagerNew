@@ -5,6 +5,7 @@ import os, time, copy
 import tkinter as tk
 from truckDB import truckDB
 from rectificationDB import rectificationDB 
+from sheetDB import sheetDB
 from tkinter import ttk
 from datetime import datetime
 from tkinter import *
@@ -497,8 +498,6 @@ class addInspectionPage(tk.Frame):
 
             global currentPage
             currentPage -= 1
-            
-            print(currentPage)
 
             if currentPage == 1:
                 
@@ -725,6 +724,7 @@ class addInspectionPage(tk.Frame):
                 print(odBox.get('1.0',END).strip())
                 print(insBox.get('1.0',END).strip())
                 print(truck[0])
+                print(" ".join(truck[1:3]))
                 now = datetime.now()
                 currentDate = str(now.strftime("%d/%m/%Y"))
                 print(currentDate)
@@ -732,6 +732,21 @@ class addInspectionPage(tk.Frame):
                 # Capture the relevant rectifications.
                 rectDB = rectificationDB('rectifications.db')
                 rects = rectDB.fetch()
+
+                sheeDB = sheetDB('sheets.db')
+                sheets = sheeDB.fetch()
+                
+                falses = []
+
+                for line in statuses:
+                    if statuses[line] is False:
+                        falses.append(line)
+
+                print(falses)
+                print(type(truck[0]), type(clicked.get()), type(odBox.get('1.0',END).strip()), type(insBox.get('1.0',END).strip()), type(" ".join(truck[1:3])), type(currentDate), type(falses))
+                # reg, operator, odometer, inspector, makemodel, date, falselines
+                sheeDB.insert(truck[0], clicked.get(), odBox.get('1.0',END).strip(), insBox.get('1.0',END).strip(), " ".join(truck[1:3]), currentDate, " ".join(falses))
+
                 for rect in rects:
                     if rect[0] == truck[0]:
                         print(rect)
@@ -764,8 +779,8 @@ class addInspectionPage(tk.Frame):
 
                 if rect[0] == truck[0]:
                     checkNoLabel.place(x=310, y=430 + (i * 30))
-                    rectActionLabel.place(x=840, y=430 + (i * 30))
-                    rectByLabel.place(x=1505, y=430 + (i * 30))
+                    rectActionLabel.place(x=820, y=430 + (i * 30))
+                    rectByLabel.place(x=1485, y=430 + (i * 30))
                     i += 1
 
                 #a = Label(self, text = " ".join(rect[1:2]) + " " * 100 + " ".join(rect[2:3]), bg='white', font='Arial')
@@ -812,7 +827,6 @@ class addInspectionPage(tk.Frame):
                     rectBy = lastRect[3]
 
                     print(checkNo, rectAction, rectBy)
-                    print(len(rects))
 
                     checkNoLabel = Label(self, text=checkNo, bg='white', font='Arial')
                     checkNoLabel.text = checkNo
@@ -824,14 +838,15 @@ class addInspectionPage(tk.Frame):
                     rectByLabel.text = rectBy
 
                     if len(rects) == 1:
+                        print('Length is 1')
                         checkNoLabel.place(x=310, y=430)
-                        rectActionLabel.place(x=840, y=430)
-                        rectByLabel.place(x=1505, y=430)
+                        rectActionLabel.place(x=820, y=430)
+                        rectByLabel.place(x=1485, y=430)
 
                     else:
                         checkNoLabel.place(x=310, y=430 + ((len(rects) - 1) * 30))
-                        rectActionLabel.place(x=840, y=430 + ((len(rects) - 1) * 30))
-                        rectByLabel.place(x=1505, y=430 + ((len(rects) - 1) * 30))
+                        rectActionLabel.place(x=820, y=430 + ((len(rects) - 1) * 30))
+                        rectByLabel.place(x=1485, y=430 + ((len(rects) - 1) * 30))
 
                     rectLabels.append(checkNoLabel)
                     rectLabels.append(rectActionLabel)

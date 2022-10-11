@@ -1,7 +1,3 @@
-Tuesday
-'Generate' feature:
-    •Insert captured info into database.
-
 'View inspections' page:
     •Listbox with sheets. Double click brings up the sheet.
     •Mimick the sheet, with everything 'sideways' on the screen.
