@@ -1,3 +1,5 @@
+Add scrollable frame feature
+
 'View inspections' page:
     •Listbox with sheets. Double click brings up the sheet.
     •Mimick the sheet, with everything 'sideways' on the screen.

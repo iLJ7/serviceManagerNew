@@ -346,10 +346,10 @@ class addInspectionPage(tk.Frame):
         nameOfInspectorLabel.image = nameOfInspector
         nameOfInspectorLabel.place(x=234, y=280)
 
-        odBox = Text(self, height = 1, width = 14)
+        odBox = Entry(self, width = 14)
         odBox.place(x=430, y=215)
         
-        insBox = Text(self, height = 1, width = 14)
+        insBox = Entry(self, width = 14)
         insBox.place(x=430, y=285)
         
         clicked = StringVar()
@@ -413,8 +413,8 @@ class addInspectionPage(tk.Frame):
         def passAllItems():
             
             clicked.set('John Doe')
-            odBox.delete('1.0', END)
-            insBox.delete('1.0', END)
+            odBox.delete(0, END)
+            insBox.delete(0, END)
             
             try:
                 for i, button in enumerate(buttons):
