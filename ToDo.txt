@@ -1,3 +1,5 @@
+Replace scrollable frame with textbox with images.
+
 'View inspections' page:
     •Listbox with sheets. Double click brings up the sheet.
     •Mimick the sheet, with everything 'sideways' on the screen.
