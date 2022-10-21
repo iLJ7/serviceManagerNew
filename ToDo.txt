@@ -1,4 +1,4 @@
-Replace scrollable frame with textbox with images.
+Test scroll on laptop.
 
 'View inspections' page:
     •Listbox with sheets. Double click brings up the sheet.
