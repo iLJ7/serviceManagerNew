@@ -1,4 +1,4 @@
-Add scrollable frame feature
+Kivy scroll
 
 'View inspections' page:
     •Listbox with sheets. Double click brings up the sheet.

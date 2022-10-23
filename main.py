@@ -127,13 +127,6 @@ class truckPage(tk.Frame):
         scrollbar = Scrollbar(container, orient="vertical", command=my_canvas.yview)
         scrollable_frame = Frame(my_canvas, bg='white')#, highlightbackground="blue", highlightthickness=10)
 
-        scrollable_frame.bind(
-        "<Configure>",
-        lambda e: my_canvas.configure(
-            scrollregion=my_canvas.bbox("all")
-            )
-        )
-
         my_canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
         my_canvas.configure(yscrollcommand=scrollbar.set)
