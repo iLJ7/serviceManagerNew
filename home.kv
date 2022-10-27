@@ -1,0 +1,34 @@
+#:kivy 2.0
+
+<MyGridLayout>
+
+    canvas.before:
+        Color:
+            rgba: (0.99, 0.99, 0.99, 1)
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        size: root.width, root.height
+        orientation: 'vertical'
+        # orientation: 'tb-lr'
+
+        Button:
+            text: 'Hello'
+            font_size: 32
+
+            Image:
+                source: 'select.png'
+                size: self.texture_size
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+    
+        Button:
+            text: 'Hi there'
+            font_size: 32
+
+            Image:
+                source: 'trucks.png'
+

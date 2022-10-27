@@ -1,0 +1,41 @@
+#:kivy 2.0
+
+<MyGridLayout>
+
+    canvas.before:
+        Color:
+            rgba: (0.99, 0.99, 0.99, 1)
+
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ScrollView:
+    
+        size: root.width, root.height
+        
+        GridLayout:
+            cols: 1
+            # set GridLayout to be unrestricted vertically
+            size_hint_y:  None
+            # set the height of the layout to the combined height of the children
+            height: self.minimum_height
+        
+            Image:
+                source: 'select.png'
+                size: root.width, root.height / 3
+                padding: 0
+                size_hint_y: None
+
+            Image:
+                source: '151-kk-142.png'
+                size: root.width, root.height / 3
+                padding: 0
+                size_hint_y: None
+                
+            TextInput:
+                # cause the Layout's height is calculated by the children's height
+                # we have to disable size_hint_y and manually provide height
+                size_hint_y: None
+                height: '29sp'
+                hint_text: 'Firstname'
