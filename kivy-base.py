@@ -7,23 +7,28 @@ from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.core.window import Window
-from kivy.properties import ObjectProperty
+from kivy.uix.screenmanager import ScreenManager, FadeTransition, Screen
 from ctypes import windll
 windll.shcore.SetProcessDpiAwareness(1)
 
-Builder.load_file('home.kv')
+class HomeWindow(Screen):
+    pass
 
-class MyGridLayout(Widget):
-    
-    name = ObjectProperty(None)
-    pizza = ObjectProperty(None)
-    color = ObjectProperty(None)
+class TrucksWindow(Screen):
+    pass
+
+class WindowManager(ScreenManager):
+    pass
+
+# Builder.load_file('home.kv')
+
+kv = Builder.load_file('home.kv')
 
 class MyApp(App):
 
     def build(self):
         Window.maximize()
-        return MyGridLayout()
+        return kv
 
 if __name__ == '__main__':
     MyApp().run()

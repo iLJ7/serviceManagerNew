@@ -1,34 +1,128 @@
 #:kivy 2.0
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+WindowManager:
+    HomeWindow:
+    TrucksWindow:
 
-<MyGridLayout>
-
-    canvas.before:
-        Color:
-            rgba: (0.99, 0.99, 0.99, 1)
-
-        Rectangle:
-            pos: self.pos
-            size: self.size
+<HomeWindow>:
     
+    name: 'home'
+
     BoxLayout:
         size: root.width, root.height
         orientation: 'vertical'
         # orientation: 'tb-lr'
 
-        Button:
-            text: 'Hello'
-            font_size: 32
-
+        Image:
             Image:
                 source: 'select.png'
-                size: self.texture_size
+                size: root.width, root.height
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
     
         Button:
-            text: 'Hi there'
-            font_size: 32
 
+            background_normal: ''
+            background_down: ''
+            background_color: (1,1,1,1)
+            on_release: 
+                app.root.transition = FadeTransition(duration=0.12)
+                app.root.current = "trucks"
+ 
             Image:
                 source: 'trucks.png'
+                size: self.texture_size
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+        
+        Button:
+            
+            background_normal: ''
+            background_down: ''
+            background_color: (1,1,1,1)
 
+            Image:
+                source: 'trailers.png'
+                size: self.texture_size
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+
+<TrucksWindow>:
+
+    name: 'trucks'
+    canvas.before:
+        Color:
+            rgba: 253, 253, 152, 1
+            
+        Rectangle:
+            pos: self.pos 
+            size: self.size
+
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        size: self.size
+
+        GridLayout:
+            cols: 1
+            # set GridLayout to be unrestricted vertically
+            size_hint_y: None
+            # set the height of the layout to the combined height of the children
+            height: (self.minimum_height / 2) + 100
+            row_force_default: True
+            row_default_height: 300
+            padding: 100
+
+            Image:
+                source: 'select.png'
+                size: self.texture_size
+                size_hint: 1, None
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+
+            Image:
+                source: '151-kk-142.png'
+                size: self.texture_size
+                size_hint: 1, None
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+
+            Image:
+                source: '171-kk-7900.png'
+                size: self.texture_size
+                size_hint: 1, None
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+
+            Image:
+                source: '181-wx-2860.png'
+                size: self.texture_size
+                size_hint: 1, None
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+            
+            Image:
+                source: 'trailers.png'
+                size: self.texture_size
+                size_hint: 1, None
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+
+    FloatLayout:
+
+        Button:
+            size: 185, 160
+            size_hint: None, None
+            background_normal: "None"
+            pos: (0, 830)
+
+            on_release:
+                print("gotcha")
+                app.root.transition = FadeTransition(duration=0.12)
+                app.root.current = "home"
+
+            Image:
+                source: 'home.png'
+                pos: (0, 830)
+                size: self.texture_size
