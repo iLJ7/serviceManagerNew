@@ -1,0 +1,187 @@
+#:kivy 2.0
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+WindowManager:
+    HomeWindow:
+    TrucksWindow:
+
+<TrucksPage>:
+
+<HomeWindow>:
+    
+    name: 'home'
+
+    BoxLayout:
+        size: root.width, root.height
+        orientation: 'vertical'
+        # orientation: 'tb-lr'
+
+        Image:
+            Image:
+                source: 'select.png'
+                size: root.width, root.height
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+    
+        Button:
+
+            background_color: (1,1,1,1)
+            background_normal: ''
+            background_down: ''
+            
+            on_release: 
+                app.root.transition = FadeTransition(duration=0.12)
+                app.root.current = "trucks"
+ 
+            Image:
+                source: 'trucks.png'
+                size: self.texture_size
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+        
+        Button:
+            
+            background_normal: ''
+            background_down: ''
+            background_color: (1,1,1,1)
+
+            Image:
+                source: 'trailers.png'
+                size: self.texture_size
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+
+<TrucksWindow>:
+    
+    on_pre_enter: root.loadTrucks(trucksgrid)                   
+
+    name: 'trucks'
+    canvas.before:
+        Color:
+            rgba: 253, 253, 152, 1
+            
+        Rectangle:
+            pos: self.pos 
+            size: self.size
+
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        size: self.size
+
+        BoxLayout:
+            orientation: 'vertical'
+            height: self.minimum_height + 150
+            size_hint_y: None
+
+            TextInput:
+                hint_text: 'Search reg'
+                halign: "center"
+                font_size: 100
+                multiline: False
+                height: 50
+                id: search
+                cursor_color: [0,0,0,0] # white
+
+            GridLayout:
+                id: trucksgrid
+                cols: 1
+                # set GridLayout to be unrestricted vertically
+                size_hint_y: None
+                # set the height of the layout to the combined height of the children
+                height: self.minimum_height
+                # row_force_default: False
+                row_default_height: 300
+
+                Button:
+                    id: a
+                    name: "select" 
+                    background_normal: ''
+                    background_down: ''
+                    background_color: (1,1,1,1)
+                    on_press: root.remove(a)
+
+                    Image:
+                        source: 'select.png'
+                        size: self.texture_size
+                        size_hint: 1, None
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
+                Button:
+                    id: onefiveonekkonefourtwo
+                    name: '151-kk-142'
+                    background_normal: ''
+                    background_down: ''
+                    background_color: (1,1,1,1)
+                    on_press: root.remove(onefiveonekkonefourtwo)
+
+                    Image:
+                        source: '151-kk-142.png'
+                        size: self.texture_size
+                        size_hint: 1, None
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
+                Button:
+                    id: c
+                    name: '171-kk-7900'
+                    background_normal: ''
+                    background_down: ''
+                    background_color: (1,1,1,1)
+                    on_press: root.remove(c)
+                    
+                    Image:
+                        source: '171-kk-7900.png'
+                        size: self.texture_size
+                        size_hint: 1, None
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
+                Button:
+                    id: d
+                    name: '181-wx-2860'
+                    background_normal: ''
+                    background_down: ''
+                    background_color: (1,1,1,1)
+                    on_press: root.remove(d)
+
+                    Image:
+                        source: '181-wx-2860.png'
+                        size: self.texture_size
+                        size_hint: 1, None
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+                
+                Button:
+                    id: e
+                    name: 'trailers'
+                    background_normal: ''
+                    background_down: ''
+                    background_color: (1,1,1,1)
+                    on_press: root.remove(e)
+
+                    Image:
+                        source: 'trailers.png'
+                        size: self.texture_size
+                        size_hint: 1, None
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
+    FloatLayout:
+
+        Button:
+            size: 185, 160
+            size_hint: None, None
+            background_normal: "None"
+            pos: (0, 830)
+
+            on_release:
+                app.root.transition = FadeTransition(duration=0.12)
+                app.root.current = "home"
+
+            Image:
+                source: 'home.png'
+                pos: (0, 830)
+                size: self.texture_size
